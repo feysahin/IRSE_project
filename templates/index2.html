@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+    <style>
+    
+    body {
+        background-color: #abd4c3;
+        margin:0;
+    }
+
+    h1 {
+        font-size: large;
+        font-family:'Trebuchet MS';
+        font-style: normal;
+        font-weight: 500;
+        line-height: 35px;
+        margin-inline-start: 10px;
+    }
+
+    label, button {
+        font-family:'Trebuchet MS';
+        font-style:normal;
+    }
+
+    .labelTrSize {
+        left: 100px;
+        top: 100px;
+    }
+
+    .navbar {
+        overflow: hidden;
+        background-color: #617D72;
+        position: fixed;
+        top: 0;
+        width: 100%;
+    }
+
+    .navbar a {
+        float: left;
+        display: block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 35px 50px;
+        text-decoration: none;
+        font-size: 17px;
+    }
+
+    .navbar a:hover {
+        background: #ddd;
+        color: black;
+    }
+
+    .navbar h1 {
+        float: left;
+        display: block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 10px 10px;
+        font-size: 25px;
+        margin-inline-end: 300px;
+    }
+
+    .myDiv {
+        background-color: #F1F9F6;    
+        position: absolute;
+        width: 250px;
+        height: 220px;
+        left: 300px;
+        top: 50px;
+        margin-block-start: 70px;
+        border-radius: 7%;
+    }
+
+    .inputDiv {
+        background-color: #abd4c3;
+        position: absolute;
+        width: 250px;
+        height: 220px;
+        left: 50px;
+        top: 50px;
+        margin-block-start: 70px;
+    }
+    
+    /* The container */
+    .container {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        font-size: 15px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    /* Hide the browser's default checkbox */
+    .container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    /* Create a custom checkbox */
+    .checkmark {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 15px;
+        width: 15px;
+        background-color: #D9D9D9;
+        border-radius:50%;
+        margin-inline-start: 5%;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .container:hover input ~ .checkmark {
+        background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .container input:checked ~ .checkmark {
+        background-color: #2196F3;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .container input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    .btn {
+        border: none;
+        background-color: inherit;
+        padding: 14px 28px;
+        font-size: 16px;
+        cursor: pointer;
+        display: inline-block;
+        background-color: #515B60;
+    }
+
+    .btn:hover {background: #32383b;}
+
+    .btnStart {
+        position: absolute;
+        width: 300px;
+        height: 60px;
+        left: 300px;
+        top: 500px;
+        background: #515B60;
+        border-radius: 54px;
+        color: white;
+    }
+    .inputDataSize {
+        border-radius: 5px;
+        width: 60px;
+        height: 15px;
+        margin-block-start: 20px;
+    }
+    .inputTrainSize {
+        border-radius: 5px;
+        width: 60px;
+        height: 15px;
+        margin-block-start: 50px;
+    }
+    .inputEpoch {
+        border-radius: 5px;
+        width: 60px;
+        height: 15px;
+        margin-block-start: 50px;
+    }
+
+    </style>
+    <body>
+        <div class="navbar">
+            <h1>IR % SE Project</h1>
+            <a href="/data">Visualization</a>
+            <a href="/train">Training</a>
+            <a href="/contact">Contact</a>
+        </div>
+
+        <form action="/train" method="post" name="model_list">
+
+            <div class="myDiv">
+                <h1><b>Models</b></h1>
+                <label class="container">Neural Network
+                    <input type="checkbox" name="model_names" value="NN">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container">Decision Tree
+                    <input type="checkbox" name="model_names" value="DT">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container">Random Forest
+                    <input type="checkbox" name="model_names" value="RF">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container">Naive Bayes
+                    <input type="checkbox" name="model_names" value="NB">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container">Support Vector Machine
+                    <input type="checkbox" name="model_names" value="SVM">
+                    <span class="checkmark"></span>
+                </label>
+                
+            </div>
+            <div class="inputDiv">
+                <label for="d_size"><b>Data-set Size:  % </b></label>
+                <input class="inputDataSize" type="number" id="d_size" name="d_size" min="10" max="100" step="10"><br>
+
+                <label for="tr_size"><b>Train-set Size:  % </b></label>
+                <input class="inputTrainSize" type="number" id="tr_size" name="tr_size" min="60" max="90" step="10"><br>
+                
+                <label for="n_epoch"><b>Number of Epochs: </b></label>
+                <input class="inputEpoch" type="number" id="n_epoch" name="n_epoch" min="1" max="5"><br>
+            </div>
+            <input type="submit" class="btn btnStart" name="submit_button" value="Start the Training" />
+        </form>
+
+
+    </body>
+</html>
