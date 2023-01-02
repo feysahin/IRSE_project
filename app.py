@@ -1,22 +1,15 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file, make_response, url_for, Response
 from data import Models
 from machine_learning import *
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+import matplotlib
+import io
 
-
+matplotlib.use('Agg')
 
 app = Flask(__name__)
-
-def plot_png2():
-   fig = Figure()
-   axis = fig.add_subplot(1, 1, 1)
-   xs = np.random.rand(100)
-   ys = np.random.rand(100)
-   axis.plot(xs, ys)
-   output = io.BytesIO()
-   FigureCanvas(fig).print_png(output)
-   return Response(output.getvalue(), mimetype='image/png')
 
 Models = Models()
 
@@ -24,9 +17,56 @@ Models = Models()
 def contact():
     return render_template('contact.html')
 
-@app.route('/data', methods=['GET', 'POST'])
-def data():
-    return render_template('data.html')
+ 
+
+"""
+@app.route('/visualize', methods=['GET', 'POST'])
+def visualize():
+    if request.method == 'POST':
+        d_size = request.form.get('d_size')
+        print('\nData-set size: %' + d_size)
+    plt.plot([1, 2, 3, 4])
+    plt.ylabel('some numbers')
+
+    # Save the plot to a temporary buffer
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+
+    return render_template('data.html', plot_url=buf.getvalue())
+
+"""
+
+#Matplotlib page
+@app.route('/visualize', methods=("POST", "GET"))
+def visualize():
+    return render_template('data.html',
+                           PageTitle = "Visualize")
+
+
+
+@app.route('/piechart.png/<data_size_value>', methods=['GET'])
+def plot_pie_chart(data_size_value):
+    print(data_size_value)
+    fig = pie_chart(int(data_size_value))
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+
+
+
+@app.route('/boxplot.png', methods=['GET'])
+def plot_box_plot():
+    data_size = request.args.get('data_size')
+    column_name = request.args.get('column')
+
+    fig = boxplot_data(int(data_size),column_name )
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+
 
 @app.route('/train', methods=['GET', 'POST'])
 def train():
@@ -49,7 +89,7 @@ def train():
         print('Accuracy: ', acuuracy_v)
         print('Precision: ', precision_v)
 
-    return render_template('index.html', acuuracy_v=acuuracy_v, precision_v=precision_v, recall_v=recall_v, f1_v=f1_v)
+    return render_template('index.html')
 
 @app.route('/')
 def index():

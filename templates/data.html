@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    </head>
     <style>
     
     body {
@@ -146,7 +150,26 @@
     }
 
     .btn:hover {background: #32383b;}
-
+    .btnPieChart{
+        position: absolute;
+        width: 200px;
+        height: 60px;
+        left: 300px;
+        top: 100px;
+        background: #515B60;
+        border-radius: 54px;
+        color: white;
+    }
+    .btnBoxPlot{
+        position: absolute;
+        width: 200px;
+        height: 60px;
+        left: 300px;
+        top: 200px;
+        background: #515B60;
+        border-radius: 54px;
+        color: white;
+    }
     .btnStart {
         position: absolute;
         width: 300px;
@@ -163,27 +186,91 @@
         height: 15px;
         margin-block-start: 20px;
     }
+    #plot-pie-chart{
+        position: absolute;
+        width: 300px;
+        height: 60px;
+        left: 700px;
+        top: 100px;
+    }
 
+    #box-plot{
+        position: absolute;
+        width: 300px;
+        height: 60px;
+        left: 150px;
+        top: 400px;
+    }
 
     </style>
     <body>
         <div class="navbar">
             <h1>IR % SE Project</h1>
-            <a href="/data">Visualization</a>
+            <a href="/visualize">Visualization</a>
             <a href="/train">Training</a>
             <a href="/contact">Contact</a>
         </div>
 
-        <form action="/data" method="post" name="model_list">
-
             <div class="inputDiv">
                 <label for="d_size"><b>Data-set Size:  % </b></label>
                 <input class="inputDataSize" type="number" id="d_size" name="d_size" min="10" max="100" step="10"><br>
+                <br> <br>
+                <label for="column"><b>Choose a column</b></label>
+                <select name="columns" id="columns">
+                <option value="Administrative">Select</option>
+                <option value="Administrative">Administrative</option>
+                <option value="Administrative_Duration">Administrative_Duration</option>
+                <option value="Informational">Informational</option>
+                <option value="Informational_Duration">Informational_Duration</option>
+                <option value="ProductRelated">ProductRelated</option>
+                <option value="ProductRelated_Duration">ProductRelated_Duration</option>
+                <option value="BounceRates">BounceRates</option>
+                <option value="ExitRates">ExitRates</option>
+                <option value="PageValues">PageValues</option>
 
-
+                </select>
             </div>
-            <input type="submit" class="btn btnStart" name="submit_button" value="Start the Training" />
-        </form>
+            
+
+            <button class="btn btnPieChart" name="pie_chart_button" id="pie-chart-button">Pie Chart</button>
+            <button class="btn btnBoxPlot" name="box_plot_button" id="box-plot-button">Box Plot</button>
+            
+        <div id="plot-pie-chart"></div>
+        <div id="box-plot"></div>
+
+        <script>
+        var pie_chart_button = document.getElementById("pie-chart-button")
+        var box_plot_button = document.getElementById("box-plot-button")
+        var data_size = document.getElementById("d_size")
+        var column = document.getElementById("columns")
+
+        data_size.addEventListener('change',function () {
+            data_size_value = data_size.value
+        })
+        column.addEventListener('change',function () {
+            column_name = column.value
+        })
+
+        pie_chart_button.addEventListener("click", function(evt){
+            url = '/piechart.png/' + data_size_value
+            $.get(url, function(data) {
+                $('#plot-pie-chart').html(
+                    `<img src=${url}>`
+                );
+                })
+        })
+
+        box_plot_button.addEventListener("click", function(evt){
+            url = '/boxplot.png?data_size=' + data_size_value + '&column=' + column_name
+
+            $.get(url, function(data) {
+                $('#box-plot').html(
+                    `<img src=${url}>`
+                );
+                })
+        })
+
+        </script>
 
 
     </body>

@@ -10,13 +10,7 @@ from sklearn import tree
 from sklearn.metrics import f1_score, recall_score, precision_score, accuracy_score, confusion_matrix
 
 import matplotlib.pyplot as plt
-from io import BytesIO
-import base64
-from matplotlib.figure import Figure
-import io
-import random
-from flask import Response
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+
 
 import pandas as pd
 import numpy as np
@@ -66,25 +60,12 @@ def transform_categorical_to_numerical(df):
   return df
 
 
-def boxplot_data(df, columns):
-  for column in columns:
-    plt.boxplot(df[column])
-    plt.title(column)
-    plt.show()
-
-def plot_png():
-    fig = create_figure()
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
-
-def create_figure():
-    fig = Figure()
-    axis = fig.add_subplot(1, 1, 1)
-    xs = range(100)
-    ys = [random.randint(1, 50) for x in xs]
-    axis.plot(xs, ys)
-    return fig
+def boxplot_data(data_size, column):
+  df = prepare_data(data_size)
+  fig, ax = plt.subplots(figsize=(3, 3))
+  ax.boxplot(df[column])
+  ax.set_title(column)
+  return fig
 
 
 def clean_data(df, columns):
@@ -110,22 +91,17 @@ def prepare_data(ratio):
   df = clean_data(df, columns_to_be_cleaned)
   return df
 
-def pie_chart(df, columns):
-  for column in columns:
-    df[column].value_counts().plot(kind='pie')
-    plt.axis('equal')
-    plt.title('Number of appearances in dataset')
-    plt.show()
+def pie_chart(data_size):
+    df = prepare_data(ratio = data_size)
+    fig, ax = plt.subplots(figsize=(3, 3))
+    df["Revenue"].value_counts().plot.pie(ax=ax, autopct='%1.1f%%')
+    ax.set_title('Revenue')
+    return fig
 
 def histogram(df, columns):
   for column in columns:
     df.hist(column = column)
 
-def visualize_data(ratio):
-    df = prepare_data(ratio = ratio)
-    boxplot_data(df, numerical_columns)
-    pie_chart(df, binary_columns)
-    return df
     
 
 def train_model(model_name, ratio, train_size):
