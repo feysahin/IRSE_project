@@ -207,7 +207,7 @@
         <div class="navbar">
             <h1>IR % SE Project</h1>
             <a href="/visualize">Visualization</a>
-            <a href="/train">Training</a>
+            <a href="/">Training</a>
             <a href="/contact">Contact</a>
         </div>
 
@@ -215,9 +215,17 @@
                 <label for="d_size"><b>Data-set Size:  % </b></label>
                 <input class="inputDataSize" type="number" id="d_size" name="d_size" min="10" max="100" step="10"><br>
                 <br> <br>
+                <label for="process"><b>Process the data?</b></label>
+                <select name="process" id="process">
+                <option value="Select">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                </select>
+                
+                <br> <br>
                 <label for="column"><b>Choose a column</b></label>
                 <select name="columns" id="columns">
-                <option value="Administrative">Select</option>
+                <option value="Select">Select</option>
                 <option value="Administrative">Administrative</option>
                 <option value="Administrative_Duration">Administrative_Duration</option>
                 <option value="Informational">Informational</option>
@@ -243,6 +251,7 @@
         var box_plot_button = document.getElementById("box-plot-button")
         var data_size = document.getElementById("d_size")
         var column = document.getElementById("columns")
+        var process_data = document.getElementById("process")
 
         data_size.addEventListener('change',function () {
             data_size_value = data_size.value
@@ -250,9 +259,12 @@
         column.addEventListener('change',function () {
             column_name = column.value
         })
+        process_data.addEventListener('change',function () {
+            process_data_value = process_data.value
+        })
 
         pie_chart_button.addEventListener("click", function(evt){
-            url = '/piechart.png/' + data_size_value
+            url = '/piechart.png?data_size=' + data_size_value + '&preprocess=' + process_data_value
             $.get(url, function(data) {
                 $('#plot-pie-chart').html(
                     `<img src=${url}>`
@@ -261,7 +273,7 @@
         })
 
         box_plot_button.addEventListener("click", function(evt){
-            url = '/boxplot.png?data_size=' + data_size_value + '&column=' + column_name
+            url = '/boxplot.png?data_size=' + data_size_value + '&column=' + column_name + '&preprocess=' + process_data_value
 
             $.get(url, function(data) {
                 $('#box-plot').html(

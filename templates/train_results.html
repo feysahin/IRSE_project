@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
+    <head>
+    </head>
     <style>
-    
-    body {
+        body {
         background-color: #abd4c3;
         margin:0;
     }
@@ -86,6 +87,27 @@
         margin-inline-end: 300px;
     }
 
+    .results-table {
+        font-family: arial, sans-serif;
+        font-size: large;
+        border-collapse: collapse;
+        width: 60%;
+        margin-block-start: 100px;
+        text-align: center;
+        position: absolute;
+        top: 20%;
+        left: 20%;
+    }
+    .model-name{
+        position: absolute;
+        top: 15%;
+        left: 30%;
+        align-items: center;
+        text-align: center;
+
+    }
+    
+
     </style>
     <body>
         <div class="navbar">
@@ -94,20 +116,32 @@
             <a href="/">Training</a>
             <a href="/contact">Contact</a>
         </div>
-
-        <div class="contactDiv">
-            <h1><b>Project Members:</b></h1>
-            <div class="member_div">
-                <h2><b>Feyza Şahin</b><br> > 18011019</br> > feyza.sahin3@std.yildiz.edu.tr</h2>
-            </div>
-            <div class="member_div">
-                <h2><b>Rayene Bech</b><br> > 18011115</br> > rayene.bech@std.yildiz.edu.tr</h2>
-            </div>
-            <div class="member_div">
-                <h2><b>Taleen Elashi</b><br> > E22011006</br> > taleenashi88@gmail.com</h2>
-            </div>
-
-        </div>
-
-    </body>
-</html>
+        <h1 class="model-name"> Train/Test Results for the model: {{ model_name }}</h1>
+        <table class= "results-table">
+            <tr>
+              <th>Metric</th>
+              <th>Train</th>
+              <th>Test</th>
+            </tr>
+            <tr>
+              <td>Accuracy</td>
+              <td>{{ train_accuracy }}%</td>
+              <td>{{ test_accuracy }}%</td>
+            </tr>
+            <tr>
+              <td>Recall</td>
+              <td>{{ train_recall }}%</td>
+              <td>{{ test_recall }}%</td>
+            </tr>
+            <tr>
+              <td>Precision</td>
+              <td>{{ train_precision }}%</td>
+              <td>{{ test_precision }}%</td>
+            </tr>
+            <tr>
+              <td>F1 Score</td>
+              <td>{{ train_f1 }}%</td>
+              <td>{{ test_f1 }}%</td>
+            </tr>
+          </table>
+</body>          

@@ -6,7 +6,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
-from sklearn import tree
+from sklearn.utils import resample
 from sklearn.metrics import f1_score, recall_score, precision_score, accuracy_score, confusion_matrix
 
 import matplotlib.pyplot as plt
@@ -60,8 +60,23 @@ def transform_categorical_to_numerical(df):
   return df
 
 
-def boxplot_data(data_size, column):
-  df = prepare_data(data_size)
+def resample_df(df):
+  revenue_data = df[df['Revenue']==1]
+  non_revenue_data = df[df['Revenue']==0]
+  revenue_df = resample(revenue_data,
+             replace=True,
+             n_samples=len(non_revenue_data),
+             random_state=42)
+  data_upsampled = pd.concat([revenue_df, non_revenue_data])
+  data_upsampled = data_upsampled.sample(frac = 1, random_state= 1, ignore_index = True)
+  return data_upsampled
+
+def boxplot_data(data_size, column, preprocess):
+  if preprocess == "Yes":
+      df = prepare_data(ratio = data_size)
+  else:
+      df = pd.read_csv("online_shoppers_intention.csv")
+      df = df.sample(frac = (data_size/100), random_state= 1, ignore_index = True)
   fig, ax = plt.subplots(figsize=(3, 3))
   ax.boxplot(df[column])
   ax.set_title(column)
@@ -89,10 +104,15 @@ def prepare_data(ratio):
   df = transform_categorical_to_numerical(df)
   columns_to_be_cleaned = ['Administrative_Duration', 'Informational_Duration', 'ProductRelated_Duration', 'PageValues']
   df = clean_data(df, columns_to_be_cleaned)
+  df = resample_df(df)
   return df
 
-def pie_chart(data_size):
-    df = prepare_data(ratio = data_size)
+def pie_chart(data_size, preprocess):
+    if preprocess == "Yes":
+        df = prepare_data(ratio = data_size)
+    else:
+        df = pd.read_csv("online_shoppers_intention.csv")
+        df = df.sample(frac = (data_size/100), random_state= 1, ignore_index = True)
     fig, ax = plt.subplots(figsize=(3, 3))
     df["Revenue"].value_counts().plot.pie(ax=ax, autopct='%1.1f%%')
     ax.set_title('Revenue')
@@ -114,8 +134,9 @@ def train_model(model_name, ratio, train_size):
   )
   model = MODEL_DICT[model_name]()
   model = model.fit(x_train, y_train)
-  predictions = model.predict(x_test)
-  return predictions, y_test
+  return model, X, x_test, Y, y_test
 
-def accuracy(predictions, y_test):
-  return accuracy_score(y_test, predictions), precision_score(y_test, predictions), recall_score(y_test, predictions), f1_score(y_test, predictions)
+def compute_accuracy(model, x, y):
+    predictions = model.predict(x)
+    accuracy, precision, recall,f1=  accuracy_score(y, predictions), precision_score(y, predictions), recall_score(y, predictions), f1_score(y, predictions)
+    return round(accuracy*100,2), round(precision*100,2), round(recall*100,2), round(f1*100,2)
