@@ -7,13 +7,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
 from sklearn.utils import resample
-from sklearn.metrics import f1_score, recall_score, precision_score, accuracy_score, confusion_matrix
+from sklearn.metrics import f1_score, recall_score, precision_score, accuracy_score, confusion_matrix, roc_curve, roc_auc_score
 
 import matplotlib.pyplot as plt
 
 
 import pandas as pd
 import numpy as np
+import itertools
 
 VISITOR_DICT = {
     'Returning_Visitor': 0,
@@ -132,7 +133,10 @@ def train_model(model_name, ratio, train_size):
   x_train, x_test, y_train, y_test = train_test_split(
       X, Y, test_size= 1 - (train_size/100), random_state=42, shuffle=True
   )
-  model = MODEL_DICT[model_name]()
+  if model_name != "NB":
+    model = MODEL_DICT[model_name](random_state=42)
+  else:
+    model = MODEL_DICT[model_name]()
   model = model.fit(x_train, y_train)
   return model, X, x_test, Y, y_test
 
@@ -140,3 +144,38 @@ def compute_accuracy(model, x, y):
     predictions = model.predict(x)
     accuracy, precision, recall,f1=  accuracy_score(y, predictions), precision_score(y, predictions), recall_score(y, predictions), f1_score(y, predictions)
     return round(accuracy*100,2), round(precision*100,2), round(recall*100,2), round(f1*100,2)
+
+def compute_confusion_matrix(model, x, y):
+    predictions = model.predict(x)
+    cm = confusion_matrix(y, predictions)
+    return cm
+
+
+def plot_confusion_matrix(model, x, y, classes):
+    cm = compute_confusion_matrix(model, x, y)
+    fig, ax = plt.subplots()
+    im = ax.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+    ax.figure.colorbar(im, ax=ax)
+    # We want to show all ticks...
+    ax.set(xticks=np.arange(cm.shape[1]),
+           yticks=np.arange(cm.shape[0]),
+           # ... and label them with the respective list entries
+           xticklabels=classes, yticklabels=classes,
+           title='Confusion matrix',
+           ylabel='True label',
+           xlabel='Predicted label')
+    # Rotate the tick labels and set their alignment.
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+             rotation_mode="anchor")
+
+    # Loop over data dimensions and create text annotations.
+    thresh = cm.max() / 2.
+    for i in range(cm.shape[0]):
+        for j in range(cm.shape[1]):
+            ax.text(j, i, format(cm[i, j], 'd'),
+                    ha="center", va="center",
+                    color="white" if cm[i, j] > thresh else "black")
+    fig.tight_layout()
+    return fig
+
+

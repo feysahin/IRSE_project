@@ -9,6 +9,16 @@ import io
 
 matplotlib.use('Agg')
 
+MODEL_DICT = {
+    "NN": "Neural Network Classifier",
+    "DT": "Decision Tree Classifier",
+    "RF": "Random Forest Classifier", 
+    "NB": "Gaussian Naive Bais Classifier",
+    "SVM": "Support Vector Classifier"
+}
+
+
+
 app = Flask(__name__)
 
 Models = Models()
@@ -50,8 +60,6 @@ def plot_box_plot():
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
-
-
 @app.route('/train', methods=['GET', 'POST'])
 def train():
     if request.method == 'POST':
@@ -81,10 +89,12 @@ def train():
         print('Train Precision: ', train_precision)
         print('Train Recall: ', train_recall)
         print('Train F1: ', train_f1)
-
-    return render_template('train_results.html', model_name=models[0] , test_accuracy=test_accuracy, test_precision=test_precision,
+        confusion_matrix = plot_confusion_matrix(model, x_test, y_test, [1,0])
+        confusion_matrix.savefig('static/images/cm.png')
+    return render_template('train_results.html', model_name= MODEL_DICT[models[0]] , test_accuracy=test_accuracy, test_precision=test_precision,
                            test_recall=test_recall, test_f1=test_f1, train_accuracy=train_accuracy,
-                           train_precision=train_precision, train_recall=train_recall, train_f1=train_f1)
+                           train_precision=train_precision, train_recall=train_recall, train_f1=train_f1,
+                            confusion_matrix = 'static/images/cm.png', PageTitle = "Train Results")
 @app.route('/')
 def index():
     return render_template('index.html')
