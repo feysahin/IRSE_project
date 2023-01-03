@@ -98,6 +98,19 @@ def clean_data(df, columns):
   print("Total number of records deleted:", ini_length - len(df))
   return df
 
+def select_features(df, k):
+  X = df.copy()
+  Y = X.pop("Revenue")
+  # feature extraction
+  selector = SelectKBest(score_func=chi2, k=k)
+  fit = selector.fit(X, Y)
+  # summarize scores
+  np.set_printoptions(precision=3)
+  print(fit.scores_)
+  print("Slected columns: ", X.columns[selector.get_support()])
+  features = fit.transform(X)
+  # summarize selected features
+  return features
 
 def prepare_data(ratio):
   df = pd.read_csv("online_shoppers_intention.csv")
@@ -129,6 +142,7 @@ def train_model(model_name, ratio, train_size):
   df = prepare_data(ratio)
   X = df.copy()
   Y = X.pop("Revenue")
+  X = select_features(df, 10)
   # Split the data into training and testing sets
   x_train, x_test, y_train, y_test = train_test_split(
       X, Y, test_size= 1 - (train_size/100), random_state=42, shuffle=True
