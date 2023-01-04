@@ -75,11 +75,22 @@
     .inputDiv {
         background-color: #abd4c3;
         position: absolute;
-        width: 250px;
+        width: 330px;
         height: 220px;
         left: 50px;
         top: 50px;
         margin-block-start: 70px;
+    }
+
+    .infoDiv {
+        background-color: #7fa093e9;
+        position: absolute;
+        width: 600px;
+        height: 350px;
+        left: 50px;
+        top: 50px;
+        margin-block-start: 270px;
+        padding-inline-start: 10px;
     }
     
     /* The container */
@@ -154,8 +165,8 @@
         position: absolute;
         width: 200px;
         height: 60px;
-        left: 300px;
-        top: 100px;
+        left: 420px;
+        top: 130px;
         background: #515B60;
         border-radius: 54px;
         color: white;
@@ -164,8 +175,8 @@
         position: absolute;
         width: 200px;
         height: 60px;
-        left: 300px;
-        top: 200px;
+        left: 420px;
+        top: 220px;
         background: #515B60;
         border-radius: 54px;
         color: white;
@@ -198,8 +209,8 @@
         position: absolute;
         width: 300px;
         height: 60px;
-        left: 150px;
-        top: 400px;
+        left: 1100px;
+        top: 100px;
     }
 
     </style>
@@ -222,7 +233,7 @@
                 <option value="No">No</option>
                 </select>
                 
-                <br> <br>
+                <br> <br> <br>
                 <label for="column"><b>Choose a column</b></label>
                 <select name="columns" id="columns">
                 <option value="Select">Select</option>
@@ -245,6 +256,23 @@
             
         <div id="plot-pie-chart"></div>
         <div id="box-plot"></div>
+        <div class="infoDiv">
+            <h2>
+                About Features
+            </h2>
+            <p>
+                <b>Administrative</b>, <b>Administrative Duration</b>, <b>Informational</b>, <b>Informational Duration</b>, <b>Product Related</b>, <b>Product Related Duration</b>: represent the number of different types of pages visited by the visitor in that session and total time spent in each of these page categories. The values of these features are derived from the URL information of the pages visited by the user and updated in real time when a user takes an action, e.g. moving from one page to another. 
+            </p>
+            <p>
+                <b>Bounce Rate: </b> The percentage of visitors who enter the site from that page and then leave ("bounce") without triggering any other requests to the analytics server during that session. 
+            </p>
+            <p>
+                <b>Exit Rate: </b> A feature for a specific web page is calculated as for all pageviews to the page, the percentage that were the last in the session.
+            </p>
+            <p>
+                <b>Page Value: </b> Representation of the average value for a web page that a user visited before completing an e-commerce transaction.
+            </p>
+        </div>
 
         <script>
         var pie_chart_button = document.getElementById("pie-chart-button")

@@ -70,30 +70,46 @@ def train():
         tr_size = request.form.get('tr_size')
         print('Train-set size: ' + tr_size)
 
-        n_epoch = request.form.get('n_epoch')
-        print('# epoch: ' + n_epoch)
-
         models = request.form.getlist('model_names')
         print('Models: ', models, '\n')
+        max_acc = 0
 
-        model, x, x_test, y, y_test = train_model(models[0], int(d_size), int(tr_size))
-        test_accuracy, test_precision, test_recall, test_f1 = compute_accuracy(model, x_test, y_test)
-        train_accuracy, train_precision, train_recall, train_f1 = compute_accuracy(model, x, y)
+        for m in models:
 
-        print('Test Accuracy: ', test_accuracy)
-        print('Test Precision: ', test_precision)
-        print('Test Recall: ', test_recall)
-        print('Test F1: ', test_f1)
+            model, x, x_test, y, y_test = train_model(m, int(d_size), int(tr_size))
+            test_accuracy, test_precision, test_recall, test_f1 = compute_accuracy(model, x_test, y_test)
+            train_accuracy, train_precision, train_recall, train_f1 = compute_accuracy(model, x, y)
 
-        print('Train Accuracy: ', train_accuracy)
-        print('Train Precision: ', train_precision)
-        print('Train Recall: ', train_recall)
-        print('Train F1: ', train_f1)
-        confusion_matrix = plot_confusion_matrix(model, x_test, y_test, [1,0])
+            print('\nModel: ', MODEL_DICT[m])
+            print('Test Accuracy: ', test_accuracy)
+            print('Test Precision: ', test_precision)
+            print('Test Recall: ', test_recall)
+            print('Test F1: ', test_f1)
+
+            print('Train Accuracy: ', train_accuracy)
+            print('Train Precision: ', train_precision)
+            print('Train Recall: ', train_recall)
+            print('Train F1: ', train_f1)
+
+            if test_accuracy > max_acc:
+                m_cm = m
+                max_acc = test_accuracy_cm = test_accuracy
+                test_precision_cm = test_precision
+                test_recall_cm = test_recall
+                test_f1_cm = test_f1
+
+                train_accuracy_cm = train_accuracy
+                train_precision_cm = train_precision
+                train_recall_cm = train_recall
+                train_f1_cm = train_f1
+
+                confusion_matrix = plot_confusion_matrix(model, x_test, y_test, [1,0])
+
         confusion_matrix.savefig('static/images/cm.png')
-    return render_template('train_results.html', model_name= MODEL_DICT[models[0]] , test_accuracy=test_accuracy, test_precision=test_precision,
-                           test_recall=test_recall, test_f1=test_f1, train_accuracy=train_accuracy,
-                           train_precision=train_precision, train_recall=train_recall, train_f1=train_f1,
+
+    return render_template('train_results.html', model_name= MODEL_DICT[m_cm] , test_accuracy=test_accuracy_cm, test_precision=test_precision_cm,
+                           test_recall=test_recall_cm, test_f1=test_f1_cm, train_accuracy=train_accuracy_cm,
+                           train_precision=train_precision_cm, train_recall=train_recall_cm, train_f1=train_f1_cm,
                             confusion_matrix = 'static/images/cm.png', PageTitle = "Train Results")
 @app.route('/')
 def index():
