@@ -72,7 +72,7 @@ def train():
 
         models = request.form.getlist('model_names')
         print('Models: ', models, '\n')
-        max_acc = 0
+        max_f1 = 0
 
         for m in models:
 
@@ -91,12 +91,12 @@ def train():
             print('Train Recall: ', train_recall)
             print('Train F1: ', train_f1)
 
-            if test_accuracy > max_acc:
+            if test_f1 > max_f1:
                 m_cm = m
-                max_acc = test_accuracy_cm = test_accuracy
+                test_accuracy_cm = test_accuracy
                 test_precision_cm = test_precision
                 test_recall_cm = test_recall
-                test_f1_cm = test_f1
+                max_f1 = test_f1_cm = test_f1 
 
                 train_accuracy_cm = train_accuracy
                 train_precision_cm = train_precision
